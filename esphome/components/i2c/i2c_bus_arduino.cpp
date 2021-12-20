@@ -11,6 +11,8 @@ namespace i2c {
 
 static const char *const TAG = "i2c.arduino";
 
+static int last_sda;
+
 void ArduinoI2CBus::setup() {
   recover_();
 
@@ -35,7 +37,9 @@ void ArduinoI2CBus::setup() {
   ESP_LOGCONFIG(TAG, "  SDA Pin: GPIO%u", this->sda_pin_);
   ESP_LOGCONFIG(TAG, "  SCL Pin: GPIO%u", this->scl_pin_);
 
-          
+  // AJG FIXME: Glorious hack...
+  last_sda = this->sda_pin_;
+
   wire_->begin(this->sda_pin_, this->scl_pin_);
   wire_->setClock(frequency_);
   initialized_ = true;
@@ -137,7 +141,13 @@ ErrorCode ArduinoI2CBus::writev(uint8_t address, WriteBuffer *buffers, size_t cn
 #endif
 
   // AJG FIXME: This is a glorious hack.
-  wire_->begin(this->sda_pin_, this->scl_pin_);
+  if ( last_sda == this->sda_pin_ ) {
+      ESP_LOGCONFIG(TAG,"AJG FIXME: Subsequent TX on %u", this->sda_pin_);
+  } else {
+      ESP_LOGCONFIG(TAG,"AJG FIXME: Switching to TX on %u", this->sda_pin_);
+      wire_->begin(this->sda_pin_, this->scl_pin_);
+      last_sda = this->sda_pin_;
+  }
 
   ESP_LOGCONFIG(TAG,"AJG FIXME: TX on pin %u", this->sda_pin_);
 
