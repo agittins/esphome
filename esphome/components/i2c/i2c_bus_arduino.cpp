@@ -36,7 +36,7 @@ void ArduinoI2CBus::setup() {
   ESP_LOGCONFIG(TAG, "  SCL Pin: GPIO%u", this->scl_pin_);
 
           
-  wire_->begin(sda_pin_, scl_pin_);
+  wire_->begin(this->sda_pin_, this->scl_pin_);
   wire_->setClock(frequency_);
   initialized_ = true;
   if (this->scan_) {
@@ -111,6 +111,7 @@ ErrorCode ArduinoI2CBus::readv(uint8_t address, ReadBuffer *buffers, size_t cnt)
   ESP_LOGVV(TAG, "0x%02X RX %s", address, debug_hex.c_str());
 #endif
 
+  ESP_LOGCONFIG(TAG,"AJG FIXME: RX on pin %u", this->sda_pin_);
   return ERROR_OK;
 }
 ErrorCode ArduinoI2CBus::writev(uint8_t address, WriteBuffer *buffers, size_t cnt) {
@@ -134,6 +135,8 @@ ErrorCode ArduinoI2CBus::writev(uint8_t address, WriteBuffer *buffers, size_t cn
   }
   ESP_LOGVV(TAG, "0x%02X TX %s", address, debug_hex.c_str());
 #endif
+
+  ESP_LOGCONFIG(TAG,"AJG FIXME: TX on pin %u", this->sda_pin_);
 
   wire_->beginTransmission(address);
   size_t written = 0;
