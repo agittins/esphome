@@ -20,6 +20,7 @@ void ArduinoI2CBus::toggle_bus_() {
   // active class instance's pins. It's gloriously horrific.
   static int last_sda;
 
+  /*
   // AJG FIXME: This is a glorious hack.
   if ( last_sda == this->sda_pin_ ) {
       ESP_LOGCONFIG(TAG,"AJG FIXME: Subsequent TX on %u", this->sda_pin_);
@@ -29,6 +30,7 @@ void ArduinoI2CBus::toggle_bus_() {
       wire_->begin(this->sda_pin_, this->scl_pin_);
       last_sda = this->sda_pin_;
   }
+  */
 }
 
 void ArduinoI2CBus::setup() {
@@ -50,10 +52,6 @@ void ArduinoI2CBus::setup() {
     wire_ = new TwoWire();  // NOLINT(cppcoreguidelines-owning-memory)
   next_bus_num++;
 #endif
-
-  ESP_LOGCONFIG(TAG, "Setting pins for bus %u", next_bus_num);
-  ESP_LOGCONFIG(TAG, "  SDA Pin: GPIO%u", this->sda_pin_);
-  ESP_LOGCONFIG(TAG, "  SCL Pin: GPIO%u", this->scl_pin_);
 
   toggle_bus_();
 
