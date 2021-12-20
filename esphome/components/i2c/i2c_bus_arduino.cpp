@@ -136,7 +136,7 @@ ErrorCode ArduinoI2CBus::writev(uint8_t address, WriteBuffer *buffers, size_t cn
   ESP_LOGVV(TAG, "0x%02X TX %s", address, debug_hex.c_str());
 #endif
 
-  # AJG FIXME: This is a glorious hack.
+  // AJG FIXME: This is a glorious hack.
   wire_->begin(this->sda_pin_, this->scl_pin_);
 
   ESP_LOGCONFIG(TAG,"AJG FIXME: TX on pin %u", this->sda_pin_);
