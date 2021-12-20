@@ -33,7 +33,11 @@ void ArduinoI2CBus::setup() {
   next_bus_num++;
 #endif
 
-  ESP_LOGCONFIG(TAG, "Settings pins for bus %u to GPIOs %u, %u", next_bus_num, this->sda_pin, this->scl_pin);
+  ESP_LOGCONFIG(TAG, "Setting pins for bus %u", next_bus_num);
+  ESP_LOGCONFIG(TAG, "  SDA Pin: GPIO%u", this->sda_pin_);
+  ESP_LOGCONFIG(TAG, "  SCL Pin: GPIO%u", this->scl_pin_);
+
+          
   wire_->begin(sda_pin_, scl_pin_);
   wire_->setClock(frequency_);
   initialized_ = true;
