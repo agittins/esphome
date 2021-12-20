@@ -25,10 +25,8 @@ void ArduinoI2CBus::setup() {
   // esp8266 constructor takes no params
   static uint8_t next_bus_num = 0;
   if (next_bus_num == 0)
-    ESP_LOGCONFIG(TAG, "First bus init: %u", next_bus_num);
     wire_ = &Wire;  // NOLINT(cppcoreguidelines-prefer-member-initializer)
   else
-    ESP_LOGCONFIG(TAG, "Subsequent bus init: %u", next_bus_num);
     wire_ = new TwoWire();  // NOLINT(cppcoreguidelines-owning-memory)
   next_bus_num++;
 #endif
