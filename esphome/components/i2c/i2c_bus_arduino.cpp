@@ -22,7 +22,13 @@ void ArduinoI2CBus::setup() {
     wire_ = new TwoWire(next_bus_num);  // NOLINT(cppcoreguidelines-owning-memory)
   next_bus_num++;
 #else
-  wire_ = &Wire;  // NOLINT(cppcoreguidelines-prefer-member-initializer)
+  // esp8266 constructor takes no params
+  static uint8_t next_bus_num = 0;
+  if (next_bus_num == 0)
+    wire_ = &Wire;  // NOLINT(cppcoreguidelines-prefer-member-initializer)
+  else
+    wire_ = new TwoWire();  // NOLINT(cppcoreguidelines-owning-memory)
+  next_bus_num++;
 #endif
 
   wire_->begin(sda_pin_, scl_pin_);
