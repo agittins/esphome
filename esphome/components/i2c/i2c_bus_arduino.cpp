@@ -11,7 +11,25 @@ namespace i2c {
 
 static const char *const TAG = "i2c.arduino";
 
-static int last_sda;
+void ArduinoI2CBus::toggle_bus_() {
+  // The twi* interface is actually static, so doesn't
+  // really support having multiple busses, even thoough
+  // it does support software i2c on any pin pair.
+  // This function bodges support for it by swapping the pins
+  // defined in twi at each call to match the currently-
+  // active class instance's pins. It's gloriously horrific.
+  static int last_sda;
+
+  // AJG FIXME: This is a glorious hack.
+  if ( last_sda == this->sda_pin_ ) {
+      ESP_LOGCONFIG(TAG,"AJG FIXME: Subsequent TX on %u", this->sda_pin_);
+  } else {
+      ESP_LOGCONFIG(TAG,"AJG FIXME: Switching to TX on %u", this->sda_pin_);
+      // would be better if we could access the twi setting directly, perhaps, but anyway..
+      wire_->begin(this->sda_pin_, this->scl_pin_);
+      last_sda = this->sda_pin_;
+  }
+}
 
 void ArduinoI2CBus::setup() {
   recover_();
@@ -37,8 +55,7 @@ void ArduinoI2CBus::setup() {
   ESP_LOGCONFIG(TAG, "  SDA Pin: GPIO%u", this->sda_pin_);
   ESP_LOGCONFIG(TAG, "  SCL Pin: GPIO%u", this->scl_pin_);
 
-  // AJG FIXME: Glorious hack...
-  last_sda = this->sda_pin_;
+  toggle_bus_();
 
   wire_->begin(this->sda_pin_, this->scl_pin_);
   wire_->setClock(frequency_);
@@ -86,6 +103,9 @@ ErrorCode ArduinoI2CBus::readv(uint8_t address, ReadBuffer *buffers, size_t cnt)
     ESP_LOGVV(TAG, "i2c bus not initialized!");
     return ERROR_NOT_INITIALIZED;
   }
+
+  toggle_bus_();
+
   size_t to_request = 0;
   for (size_t i = 0; i < cnt; i++)
     to_request += buffers[i].len;
@@ -140,14 +160,7 @@ ErrorCode ArduinoI2CBus::writev(uint8_t address, WriteBuffer *buffers, size_t cn
   ESP_LOGVV(TAG, "0x%02X TX %s", address, debug_hex.c_str());
 #endif
 
-  // AJG FIXME: This is a glorious hack.
-  if ( last_sda == this->sda_pin_ ) {
-      ESP_LOGCONFIG(TAG,"AJG FIXME: Subsequent TX on %u", this->sda_pin_);
-  } else {
-      ESP_LOGCONFIG(TAG,"AJG FIXME: Switching to TX on %u", this->sda_pin_);
-      wire_->begin(this->sda_pin_, this->scl_pin_);
-      last_sda = this->sda_pin_;
-  }
+  toggle_bus_();
 
   ESP_LOGCONFIG(TAG,"AJG FIXME: TX on pin %u", this->sda_pin_);
 

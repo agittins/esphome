@@ -30,6 +30,7 @@ class ArduinoI2CBus : public I2CBus, public Component {
 
  private:
   void recover_();
+  void toggle_bus_();
   RecoveryCode recovery_result_;
 
  protected:
