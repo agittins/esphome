@@ -25,12 +25,15 @@ void ArduinoI2CBus::setup() {
   // esp8266 constructor takes no params
   static uint8_t next_bus_num = 0;
   if (next_bus_num == 0)
+    ESP_LOGCONFIG(TAG, "First bus init: %u", next_bus_num);
     wire_ = &Wire;  // NOLINT(cppcoreguidelines-prefer-member-initializer)
   else
+    ESP_LOGCONFIG(TAG, "Subsequent bus init: %u", next_bus_num);
     wire_ = new TwoWire();  // NOLINT(cppcoreguidelines-owning-memory)
   next_bus_num++;
 #endif
 
+  ESP_LOGCONFIG(TAG, "Settings pins for bus %u to GPIOs %u, %u", next_bus_num, this->sda_pin, this->scl_pin);
   wire_->begin(sda_pin_, scl_pin_);
   wire_->setClock(frequency_);
   initialized_ = true;
