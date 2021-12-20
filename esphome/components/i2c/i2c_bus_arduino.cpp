@@ -45,7 +45,7 @@ void ArduinoI2CBus::setup() {
   }
 }
 void ArduinoI2CBus::dump_config() {
-  ESP_LOGCONFIG(TAG, "I2C Bus:");
+  ESP_LOGCONFIG(TAG, "I2C Bus: AJG FIXME:");
   ESP_LOGCONFIG(TAG, "  SDA Pin: GPIO%u", this->sda_pin_);
   ESP_LOGCONFIG(TAG, "  SCL Pin: GPIO%u", this->scl_pin_);
   ESP_LOGCONFIG(TAG, "  Frequency: %u Hz", this->frequency_);
