@@ -126,6 +126,9 @@ ErrorCode ArduinoI2CBus::writev(uint8_t address, WriteBuffer *buffers, size_t cn
   char debug_buf[4];
   std::string debug_hex;
 
+  # AJG FIXME: This is a glorious hack.
+  wire_->begin(this->sda_pin_, this->scl_pin_);
+
   for (size_t i = 0; i < cnt; i++) {
     const auto &buf = buffers[i];
     for (size_t j = 0; j < buf.len; j++) {
